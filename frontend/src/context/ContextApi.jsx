@@ -5,10 +5,10 @@ import {useNavigate} from 'react-router-dom';
 
 
 const userSchema = z.object({
-    name: z.string().min(3),
-    email: z.string().email(),
-    position: z.string().min(2),
-})
+    name: z.string().min(3, "Name must be at leat 3 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Name must start with alphabet and contain only letters, numbers and spaces"),
+    email: z.string().email('Enter valid email'),
+    position: z.string().min(2, "must be at leat 2 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Position must start with alphabet and contain only letters, numbers and spaces"),
+}).required();
 
 function ContextApi({children}){
 
@@ -22,15 +22,30 @@ function ContextApi({children}){
     const [role, setRole] = useState(null);
     const [loginemail, setloginEmail] = useState("");
     const [isloading, setisLoading] = useState(false);
+    const [error, setError] = useState(null)
+    const [showDialog, setShowDialog] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState(null);
+    const [list, setList] = useState(null);
     
     async function handleForm(){
-        console.log(form);
-        try{
-            const check = userSchema.safeParse(form);
-            // console.log(check)
+
+         const check = userSchema.safeParse(form);
+           
             if(!check.success){
-                throw new Error(`Invalid Input Try Again`);
+                const error = check.error.format()
+                
+                const errorHandlers = {}
+                errorHandlers.name = error.name?._errors[0]
+                errorHandlers.email = error.email?._errors[0]
+                errorHandlers.position = error.position?._errors[0]
+                // console.log(errorHandlers);
+                setError(errorHandlers)
+                return;
             }
+
+        try{
+           
+            setError(null)
             setisLoading(true)
             const response = await fetch(`http://localhost:5555/api/employee/add-employee`,{
                 method:'POST',
@@ -41,11 +56,13 @@ function ContextApi({children}){
                 body : JSON.stringify(form)
             })
 
+            if(!response.ok){
+                return alert('Something went wrong')
+            }   
+
             const result = await response.json();
-            console.log(result);
 
             if(!result.success){
-                console.log("***");
                 alert(result.message);
             }
 
@@ -64,6 +81,11 @@ function ContextApi({children}){
         }
         finally{
             setTimeout(()=>{
+               setForm({
+                    name:"",
+                    email:"",
+                    position:"",
+                })
                 setisLoading(false);
             },2000)
         }
@@ -86,6 +108,10 @@ function ContextApi({children}){
                 },
                 body : JSON.stringify({email:loginemail})
             });
+
+            if(!response.ok){
+                return alert('Something went wrong')
+            }
             const result = await response.json();
 
             if(!result.success){
@@ -98,9 +124,11 @@ function ContextApi({children}){
                 setTimeout(()=>{
                     
                     if(role === "admin"){
+                        sessionStorage.setItem('loggedIn', 'adminlogged');
                         return navigate('/employee-list', {replace:true})
                     }
                     else if(role === "employee"){
+                        sessionStorage.setItem('loggedIn', 'employeelogged');
                         return navigate(`/profile/${result.data.id}`, {replace:true})
                     }
 
@@ -114,8 +142,8 @@ function ContextApi({children}){
         finally{
 
             setTimeout(()=>{
+                setloginEmail('');
                 setisLoading(false)
-                console.log("finally");
             }, 1500)
         }
         
@@ -126,12 +154,52 @@ function ContextApi({children}){
         const response = await fetch(`http://localhost:5555/api/employee/delete-employee/${id}`, {
             method:'DELETE'
         });
+
+        if(!response.ok){
+            return alert('Something went wrong')
+        }
         const result = await response.json();
-        console.log(result);
+
+        if(!result.success){
+            return alert(result.message)
+        }
+
+        if(result.success){
+            setList((prev)=> {
+                return prev.filter((emp)=> emp.id !== id)
+            })
+        }
+
     }
 
-    async function logout(){
 
+    function handleDeleteClick(emp) {
+        setEmployeeToDelete(emp);
+        setShowDialog(true);
+    }
+
+    function confirmDelete() {
+        deleteEmployee(employeeToDelete.id);
+        setShowDialog(false);
+        setEmployeeToDelete(null);
+    }
+
+    function cancelDelete() {
+        setShowDialog(false);
+        setEmployeeToDelete(null);
+    }
+
+    async function logoutAdmin(){
+
+        sessionStorage.removeItem('loggedIn')
+        setTimeout(()=>{
+           return navigate('/', {replace:true});
+        },1000)
+    }
+
+    async function logoutEmployee(){
+
+        sessionStorage.removeItem('loggedIn')
         setTimeout(()=>{
            return navigate('/', {replace:true});
         },1000)
@@ -141,7 +209,7 @@ function ContextApi({children}){
 
 
     return (
-        <MyContext.Provider value={{setForm, form, loginemail, setloginEmail, handleForm, handleFormChange, handleLogin, deleteEmployee, role, setRole, isloading, setisLoading, logout}}>
+        <MyContext.Provider value={{setForm, form, loginemail, setloginEmail, handleForm, handleFormChange, handleLogin, deleteEmployee, role, setRole, isloading, setisLoading, logoutAdmin, logoutEmployee, error, setError, handleDeleteClick, confirmDelete, cancelDelete, showDialog, employeeToDelete, list, setList}}>
             {children}
         </MyContext.Provider>
     )

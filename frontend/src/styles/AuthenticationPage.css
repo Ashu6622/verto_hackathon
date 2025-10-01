@@ -1,0 +1,128 @@
+.authentication-page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.authentication-content {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+}
+
+.authentication-title {
+  color: #e74c3c;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+}
+
+.authentication-icon {
+  font-size: 4rem;
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.authentication-description {
+  color: #7f8c8d;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.go-back-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.go-back-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.go-back-button:active {
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .authentication-content {
+    padding: 2rem;
+    margin: 10px;
+  }
+  
+  .authentication-title {
+    font-size: 1.8rem;
+  }
+  
+  .authentication-icon {
+    font-size: 3rem;
+  }
+  
+  .authentication-description {
+    font-size: 1.1rem;
+  }
+  
+  .go-back-button {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .authentication-content {
+    padding: 1.5rem;
+  }
+  
+  .authentication-title {
+    font-size: 1.6rem;
+  }
+  
+  .authentication-icon {
+    font-size: 2.5rem;
+  }
+  
+  .authentication-description {
+    font-size: 1rem;
+  }
+}
+
+/* Animation */
+.authentication-content {
+  animation: fadeInScale 0.7s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

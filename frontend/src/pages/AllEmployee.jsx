@@ -2,13 +2,15 @@ import {useEffect, useState, useContext} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import * as XLSX from "xlsx";
+import '../styles/AllEmployee.css';
 
 function AllEmployee(){
     
-    const [list, setList] = useState(null);
+
     const navigate = useNavigate();
-    const {deleteEmployee, isloading, setisLoading} = useContext(MyContext);
+    const {isloading, setisLoading, logoutAdmin,  handleDeleteClick, confirmDelete, cancelDelete, showDialog, employeeToDelete, list, setList} = useContext(MyContext);
     const [text, setText] = useState('');
+
 
     useEffect(()=>{
         document.title = 'Employee List'
@@ -63,31 +65,36 @@ function AllEmployee(){
         XLSX.writeFile(workbook, "employee-list.xlsx");
     };
 
+
     const fileteredData = list?.filter((emp)=> emp.name.toLowerCase().includes(text.toLowerCase()))
 
 
     return(
-        <div>
-            <h1>All Employee</h1>
-            <div>
-                <input type='text' placeholder={'Search By Name here...'} value={text} onChange={(e)=> setText(e.target.value)}/>
+        <div className="all-employee-container">
+            <h1 className="page-title">All Employee</h1>
+            <div className="search-container">
+                <input className="search-input" type='text' placeholder={'Search By Name here...'} value={text} onChange={(e)=> setText(e.target.value)}/>
             </div>
             {
 
                 isloading ? 
-                <div>
-                    <h2>Loading...</h2>
+                <div className="loading-container">
+                    <h2 className="loading-text">Loading...</h2>
                 </div> :
-                 <div>
+                 <div className="employee-grid">
                     {
                         fileteredData?.map((emp)=>{
                             return(
-                                <div key={emp.id}>
-                                    <span>{emp.name}</span>
-                                    <span>{emp.email}</span>
-                                    <span>{emp.position}</span>
-                                     <button onClick={()=> deleteEmployee(emp.id)}>Delete</button>
-                                     <button onClick={()=> navigate(`/update-employee/${emp.id}`)}>Update</button>
+                                <div className="employee-card" key={emp.id}>
+                                    <div className="employee-info">
+                                        <span className="employee-name">{emp.name}</span>
+                                        <span className="employee-email">{emp.email}</span>
+                                        <span className="employee-position">{emp.position}</span>
+                                    </div>
+                                    <div className="employee-actions">
+                                        <button className="action-button delete-button" onClick={()=> handleDeleteClick(emp)}>Delete</button>
+                                        <button className="action-button update-button" onClick={()=> navigate(`/update-employee/${emp.id}`)}>Update</button>
+                                    </div>
                                 </div>
                             )
                         })
@@ -95,10 +102,26 @@ function AllEmployee(){
             </div>
             }
            
-            <div>
-                <button onClick={exportToExcel}>Export</button>
-                <button onClick={()=> navigate('/add-employee')}>Add Employee</button>
+            <div className="bottom-actions">
+                <button className="primary-button export-button" onClick={exportToExcel}>Export</button>
+                <button className="primary-button add-button" onClick={()=> navigate('/add-employee')}>Add Employee</button>
+                <button className="primary-button logout-button" onClick={logoutAdmin}>Logout</button>
             </div>
+
+            {showDialog && (
+                <div className="dialog-overlay">
+                    <div className="dialog-box">
+                        <h3 className="dialog-title">Confirm Delete</h3>
+                        <p className="dialog-message">
+                            Are you sure you want to delete <strong>{employeeToDelete?.name}</strong>?
+                        </p>
+                        <div className="dialog-actions">
+                            <button className="dialog-button cancel-button" onClick={cancelDelete}>Cancel</button>
+                            <button className="dialog-button confirm-button" onClick={confirmDelete}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
 
