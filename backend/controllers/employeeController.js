@@ -82,7 +82,7 @@ export async function employeeLogin(req, res){
             // maxAge: 3600*1000,
             sameSite: 'lax',
             secure: false
-        }).json({success:true, status:200, data: isExit});
+        }).json({success:true, status:200, data: isExit, message:'login Successfully'});
 
     }
     catch(error){
@@ -124,7 +124,7 @@ export async function createEmployee(req, res, next){
                }
         })
 
-        return res.json({success:false, status:200, data:newEmployee});
+        return res.json({success:true, status:200, data:newEmployee});
 
      }
     catch(error){
@@ -143,7 +143,7 @@ export async function getAllEmployee(req, res, next){
         }
     });
 
-    return res.json({data:allEmployee});
+    return res.json({success:true, status:200, data:allEmployee});
 }
 
 export async function updateEmployee(req, res, next){
@@ -171,7 +171,7 @@ export async function updateEmployee(req, res, next){
 
         const newData = await prisma.User.update({
             where:{
-                id:parseInt(empId.data)
+                id:parseInt(req.params.id)
             },
             data:{
                 name:data.data.name,
@@ -210,13 +210,13 @@ export async function deleteEmployee(req, res, next){
             return res.json({success:false, status:400, message:'Employee Not Exit' })
         }
 
-        const deletedEmp = await prisma.User.delete({
+        await prisma.User.delete({
             where:{
                 id: parseInt(empId.data)
             }
         })
 
-        return res.json({success:true, status:200, data:deletedEmp});
+        return res.json({success:true, status:200, message:'Deleted Successfully'});
 
 
     }
@@ -238,14 +238,13 @@ export async function employeeProfile(req, res, next){
 
         const isExit = await prisma.User.findUnique({
             where:{
-                id: parseInt(empId.data)
+                id: parseInt(req.params.id)
             }
         })
 
         if(!isExit){
             return res.json({success:false, status:400, message:'Employee Not Exit' })
         }
-
         return res.json({success:true, status:200, data:isExit})
         
     }
