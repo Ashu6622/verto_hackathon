@@ -21,8 +21,8 @@ function UpdateEmployee() {
 
         const controller = new AbortController()
         const clearId = setTimeout(()=>{
-        controller.abort()  //abort the request if it is taking more than 3 second
-        },3000)
+        controller.abort()  //abort the request if it is taking more than 6 second
+        },6000)
 
       try {
         setisLoading(true);
@@ -74,8 +74,8 @@ function UpdateEmployee() {
 
         const controller = new AbortController()
         const clearId = setTimeout(()=>{
-        controller.abort()  //abort the request if it is taking more than 3 second
-        },3000)
+        controller.abort()  //abort the request if it is taking more than 6 second
+        },6000)
 
         const check = userSchema.safeParse(updateform);
            
