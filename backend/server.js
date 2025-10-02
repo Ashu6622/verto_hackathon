@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import router from './routes/common.js'
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
@@ -11,10 +10,9 @@ import swaggerFile from './swagger-output.json' with { type: 'json' };
 dotenv.config();
 
 const app = express();
-app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://verto-hackathon.vercel.app/",
     credentials:true
 }));
 
