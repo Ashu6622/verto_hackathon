@@ -8,6 +8,10 @@ function AddEmployee(){
     const {form, handleForm, handleFormChange, isloading, error} = useContext(MyContext);
     const navigate = useNavigate();
 
+    useEffect(()=>{
+        document.title = 'Add Employee'
+    },[])
+
 
     return(
         <div className="add-employee-container">

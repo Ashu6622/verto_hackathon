@@ -16,6 +16,10 @@ function UpdateEmployee() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+   useEffect(()=>{
+        document.title = 'Update Profile'
+   },[])
+
   useEffect(() => {
     async function getEmployee() {
 

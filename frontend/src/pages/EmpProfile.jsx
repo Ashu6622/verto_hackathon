@@ -17,6 +17,10 @@ function EmpProfile(){
     }
 
     useEffect(()=>{
+        document.title = 'Employee Profile'
+    },[])
+
+    useEffect(()=>{
        
         async function getEmployee(){
 

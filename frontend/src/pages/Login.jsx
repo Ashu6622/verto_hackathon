@@ -7,6 +7,9 @@ function Login(){
 
     const {loginemail, handleLogin, role, setRole, setloginEmail, isloading, error} = useContext(MyContext);
 
+     useEffect(()=>{
+            document.title = 'Login'
+    },[])
 
     return(
         <div className="login-container">
