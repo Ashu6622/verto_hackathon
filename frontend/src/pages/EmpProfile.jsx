@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from 'react'
 import {useParams, Navigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import '../styles/EmpProfile.css';
+const API_URL = import.meta.env.VITE_API_URL
 
 function EmpProfile(){
 
@@ -26,7 +27,7 @@ function EmpProfile(){
             
                 try{
                     setisLoading(true);
-                    const response = await fetch(`http://localhost:5555/api/employee/employee-profile/${id}`,{
+                    const response = await fetch(`${API_URL}/employee-profile/${id}`,{
                         method:'GET',
                         signal:controller.signal
                     });

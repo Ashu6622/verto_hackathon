@@ -4,6 +4,7 @@ import { MyContext } from "../context/ContextApi.jsx";
 import {userSchema} from '../context/ContextApi'
 import '../styles/UpdateEmployee.css';
 import { toast } from 'react-toastify';
+const API_URL = import.meta.env.VITE_API_URL
 
 function UpdateEmployee() {
   const { isloading, setisLoading, error, setError } = useContext(MyContext);
@@ -25,7 +26,7 @@ function UpdateEmployee() {
 
       try {
         setisLoading(true);
-        const response = await fetch(`http://localhost:5555/api/employee/employee-profile/${id}`, {
+        const response = await fetch(`${API_URL}/employee-profile/${id}`, {
           method:'GET',
           signal:controller.signal
         });
@@ -92,7 +93,7 @@ function UpdateEmployee() {
       try {
         setError(null);
         setisLoading(true);
-      const response = await fetch(`http://localhost:5555/api/employee/update-employee/${id}`,
+      const response = await fetch(`${API_URL}/update-employee/${id}`,
         {
           method: "PUT",
           signal:controller.signal,

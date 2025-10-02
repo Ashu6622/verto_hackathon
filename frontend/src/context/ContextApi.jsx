@@ -3,6 +3,8 @@ import { z } from "zod";
 export const MyContext = createContext();
 import {useNavigate} from 'react-router-dom';
 import { toast } from 'react-toastify';
+const API_URL = import.meta.env.VITE_API_URL
+
 
 
 export const userSchema = z.object({
@@ -53,7 +55,7 @@ function ContextApi({children}){
         try{
             setError(null)
             setisLoading(true)
-            const response = await fetch(`http://localhost:5555/api/employee/add-employee`,{
+            const response = await fetch(`${API_URL}/add-employee`,{
                 method:'POST',
                 signal : controller.signal,
                 headers:{
@@ -114,7 +116,7 @@ function ContextApi({children}){
 
         try{
             setisLoading(true);
-            const response = await fetch(`http://localhost:5555/api/employee/${role}-login`,{
+            const response = await fetch(`${API_URL}/${role}-login`,{
                 method:'POST',
                 signal: controller.signal,
                 headers:{
@@ -178,7 +180,7 @@ function ContextApi({children}){
 
         try{
 
-            const response = await fetch(`http://localhost:5555/api/employee/delete-employee/${id}`, {
+            const response = await fetch(`${API_URL}/delete-employee/${id}`, {
                 method:'DELETE',
                 signal:controller.signal
             });

@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import * as XLSX from "xlsx";
 import '../styles/AllEmployee.css';
+const API_URL = import.meta.env.VITE_API_URL
+
 
 function AllEmployee(){
     
@@ -25,7 +27,7 @@ function AllEmployee(){
             try{
 
                 setisLoading(true);
-                const response = await fetch(`http://localhost:5555/api/employee/employee-list`,{
+                const response = await fetch(`${API_URL}/employee-list`,{
                     method:'GET',
                     signal:controller.signal
                 });
