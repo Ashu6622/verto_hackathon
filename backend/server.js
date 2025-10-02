@@ -12,8 +12,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "https://verto-hackathon.vercel.app/",
-    credentials:true
+    origin: "https://verto-hackathon.vercel.app",
 }));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
