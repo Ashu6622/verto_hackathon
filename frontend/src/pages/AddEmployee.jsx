@@ -1,4 +1,4 @@
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
 import { MyContext } from '../context/ContextApi.jsx';
 import {useNavigate} from 'react-router-dom'
 import '../styles/AddEmployee.css';
