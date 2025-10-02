@@ -91,7 +91,14 @@ function AllEmployee(){
                     <h2 className="loading-text">Loading...</h2>
                 </div> :
                  <div className="employee-grid">
-                    {
+                    {   
+
+                        (fileteredData?.length === 0 || fileteredData === null) ? 
+
+                        <div className="no-content">
+                            <h2>No Content</h2>
+                        </div> :
+                    
                         fileteredData?.map((emp)=>{
                             return(
                                 <div className="employee-card" key={emp.id}>

@@ -256,6 +256,20 @@
   font-size: 1rem;
 }
 
+/* No Content Styling */
+.no-content {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #7f8c8d;
+  grid-column: 1 / -1;
+}
+
+.no-content h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+}
+
 /* Dialog Box Styles */
 .dialog-overlay {
   position: fixed;
