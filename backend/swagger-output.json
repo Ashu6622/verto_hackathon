@@ -11,7 +11,7 @@
     "http"
   ],
   "paths": {
-    "/api/employee/add-employee": {
+    "/api/employees/add-employee": {
       "post": {
         "description": "",
         "parameters": [
@@ -35,7 +35,7 @@
         }
       }
     },
-    "/api/employee/admin-login": {
+    "/api/employees/admin-login": {
       "post": {
         "description": "",
         "parameters": [
@@ -59,7 +59,7 @@
         }
       }
     },
-    "/api/employee/employee-login": {
+    "/api/employees/employee-login": {
       "post": {
         "description": "",
         "parameters": [
@@ -83,7 +83,7 @@
         }
       }
     },
-    "/api/employee/employee-list": {
+    "/api/employees/employee-list": {
       "get": {
         "description": "",
         "responses": {
@@ -93,7 +93,7 @@
         }
       }
     },
-    "/api/employee/update-employee/{id}": {
+    "/api/employees/update-employee/{id}": {
       "put": {
         "description": "",
         "parameters": [
@@ -111,7 +111,7 @@
         }
       }
     },
-    "/api/employee/delete-employee/{id}": {
+    "/api/employees/delete-employee/{id}": {
       "delete": {
         "description": "",
         "parameters": [
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/api/employee/employee-profile/{id}": {
+    "/api/employees/employee-profile/{id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -147,7 +147,7 @@
         }
       }
     },
-    "/api/employee/{add-employee{where{id:parseInt(empId.data)}})returnres.json({success:true}": {
+    "/api/employees/{add-employee{where{id:parseInt(empId.data)}})returnres.json({success:true}": {
       "delete": {
         "description": "",
         "responses": {

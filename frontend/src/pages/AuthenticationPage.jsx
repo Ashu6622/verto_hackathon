@@ -3,7 +3,7 @@ import '../styles/AuthenticationPage.css';
 
 function AuthenticationPage(){
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return(
         <div className="authentication-page-container">
