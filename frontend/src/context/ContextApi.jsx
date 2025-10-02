@@ -1,10 +1,11 @@
-import {createContext, useState, useEffect} from 'react'
+import {createContext, useState} from 'react'
 import { z } from "zod";
 export const MyContext = createContext();
 import {useNavigate} from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
-const userSchema = z.object({
+export const userSchema = z.object({
     name: z.string().min(3, "Name must be at leat 3 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Name must start with alphabet and contain only letters, numbers and spaces"),
     email: z.string().email('Enter valid email'),
     position: z.string().min(2, "must be at leat 2 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Position must start with alphabet and contain only letters, numbers and spaces"),
@@ -43,13 +44,18 @@ function ContextApi({children}){
                 return;
             }
 
+             
+            const controller = new AbortController()
+            const clearId = setTimeout(()=>{
+                controller.abort()  //abort the request if it is taking more than 3 second
+            },3000)
+
         try{
-           
             setError(null)
             setisLoading(true)
             const response = await fetch(`http://localhost:5555/api/employee/add-employee`,{
                 method:'POST',
-                credentials:'include',
+                signal : controller.signal,
                 headers:{
                     'content-type':'application/json',
                 },
@@ -57,24 +63,25 @@ function ContextApi({children}){
             })
 
             if(!response.ok){
-                return alert('Something went wrong')
+                return toast.error('Something went wrong', { autoClose: 1500 })
             }   
 
             const result = await response.json();
 
             if(!result.success){
-                alert(result.message);
+                toast.error(result.message, { autoClose: 1500 });
             }
 
-            if(result.success && result.status === 200){
+            if(result.success){
                 setTimeout(()=>{
+                    toast.success(result.message, { autoClose: 1500 })
                     return navigate('/employee-list');
                 },2000)
             }   
 
         }
         catch(error){
-            alert(error.message);
+            toast.error(error.message, { autoClose: 1500 });
             setTimeout(()=>{
                 return navigate('/add-employee');
             },2000)
@@ -88,6 +95,7 @@ function ContextApi({children}){
                 })
                 setisLoading(false);
             },2000)
+            clearTimeout(clearId);
         }
        
     }
@@ -99,23 +107,28 @@ function ContextApi({children}){
 
     async function handleLogin(){
 
+        const controller = new AbortController()
+        const clearId = setTimeout(()=>{
+            controller.abort()  //abort the request if it is taking more than 3 second
+        },3000)
+
         try{
             setisLoading(true);
             const response = await fetch(`http://localhost:5555/api/employee/${role}-login`,{
                 method:'POST',
+                signal: controller.signal,
                 headers:{
                     'content-type':'application/json',
                 },
                 body : JSON.stringify({email:loginemail})
             });
-
             if(!response.ok){
-                return alert('Something went wrong')
+                return toast.error('Something went wrong', { autoClose: 1500 })
             }
             const result = await response.json();
 
             if(!result.success){
-                alert(result.message);
+                toast.error(result.message, { autoClose: 1500 });
                 return navigate('/');
             }
            
@@ -125,10 +138,12 @@ function ContextApi({children}){
                     
                     if(role === "admin"){
                         sessionStorage.setItem('loggedIn', 'adminlogged');
+                        toast.success(result.message, { autoClose: 1500 });
                         return navigate('/employee-list', {replace:true})
                     }
                     else if(role === "employee"){
-                        sessionStorage.setItem('loggedIn', 'employeelogged');
+                        sessionStorage.setItem('loggedIn', `employeelogged-${result.data.id}`);
+                        toast.success(result.message, { autoClose: 1500 });
                         return navigate(`/profile/${result.data.id}`, {replace:true})
                     }
 
@@ -137,7 +152,10 @@ function ContextApi({children}){
             
         }
         catch(error){
-            console.log(error);
+            toast.error('Try After Some Time', { autoClose: 1500 });
+            setTimeout(()=>{
+                return navigate('/');
+            },1500)
         }
         finally{
 
@@ -145,29 +163,50 @@ function ContextApi({children}){
                 setloginEmail('');
                 setisLoading(false)
             }, 1500)
+
+            clearTimeout(clearId);
         }
         
     }
 
     async function deleteEmployee(id){
 
-        const response = await fetch(`http://localhost:5555/api/employee/delete-employee/${id}`, {
-            method:'DELETE'
-        });
+        const controller = new AbortController()
+        const clearId = setTimeout(()=>{
+            controller.abort()  //abort the request if it is taking more than 3 second
+        },3000)
 
-        if(!response.ok){
-            return alert('Something went wrong')
+        try{
+
+            const response = await fetch(`http://localhost:5555/api/employee/delete-employee/${id}`, {
+                method:'DELETE',
+                signal:controller.signal
+            });
+
+            if(!response.ok){
+                return toast.error('Something went wrong', { autoClose: 1500 })
+            }
+            const result = await response.json();
+
+            if(!result.success){
+                return toast.error(result.message, { autoClose: 1500 })
+            }
+
+            if(result.success){
+                setList((prev)=> {
+                    return prev.filter((emp)=> emp.id !== id)
+                })
+                toast.success(result.message, { autoClose: 1500 });
+            }
         }
-        const result = await response.json();
-
-        if(!result.success){
-            return alert(result.message)
+        catch(error){
+            toast.error('Try After Some Time', { autoClose: 1500 });
+            setTimeout(()=>{
+                return navigate('/');
+            },1500)
         }
-
-        if(result.success){
-            setList((prev)=> {
-                return prev.filter((emp)=> emp.id !== id)
-            })
+        finally{
+            clearTimeout(clearId);
         }
 
     }

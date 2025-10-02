@@ -9,6 +9,8 @@ import AuthMessage from './pages/AuthMessage'
 import AuthenticationPage from './pages/AuthenticationPage'
 import Error from './pages/Error'
 import ContextApi from './context/ContextApi'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App(){
 
   return(
@@ -24,6 +26,7 @@ function App(){
         <Route path='/profile/:id' element={<Auth path={'profile/:id'}><EmpProfile /></Auth>}/>
         <Route path="*" element={<Error />}/>
     </Routes>
+    <ToastContainer />
     </ContextApi>
     </BrowserRouter>
   )

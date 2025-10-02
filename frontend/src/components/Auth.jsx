@@ -13,7 +13,7 @@ function Auth({path, children}){
             return <Navigate to='/authentication-page' replace={true}/>
         }
     }
-    else if(loggedIn === 'employeelogged'){
+    else if(loggedIn.includes('employeelogged')){
         if(path.includes('employee-list') || path.includes('update-employee') || path.includes('add-employee')){
             return <Navigate to='/authentication-page' replace={true}/>
         }

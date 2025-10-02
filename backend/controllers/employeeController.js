@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { z } from "zod";
-import {generateToken} from '../middlewares/jwt.js'
+
 
 const createSchema = z.object({
     name: z.string().min(3),
@@ -12,12 +12,11 @@ const createSchema = z.object({
 const loginSchema = z.string().email();
 const paramsId = z.string();
 
-export async function adminLogin(req, res){
-    console.log(req.body);
+export async function adminLogin(req, res, next){
+
   try{
         const data = loginSchema.safeParse(req.body.email);
 
-        console.log(req.body);
 
         if(!data.success){
             return res.json({success:false, status:400, message:"Email must be string and valid"})
@@ -35,25 +34,16 @@ export async function adminLogin(req, res){
             return res.json({success:false, status:403, message:"U are Not allowed to access this"})
         }
 
-        // generate token
-        const token = generateToken({email:req.body.email});
-
-
-        return res.cookie('admintoken', token, {
-            httpOnly: true,
-            // maxAge: 3600*1000,
-            sameSite: 'lax',
-            secure: false
-        }).json({success:true, status:200, data: isExit});
+        return res.json({success:true, status:200, data:isExit, message:'Login Successfully'});
 
     }
     catch(error){
-        console.log(error);
+       next(error);
     }
    
 }
 
-export async function employeeLogin(req, res){
+export async function employeeLogin(req, res, next){
 
      try{
         const data = loginSchema.safeParse(req.body.email);
@@ -74,19 +64,11 @@ export async function employeeLogin(req, res){
             return res.json({success:false, status:403, message:"U are Not allowed to access this"})
         }
 
-        // generate token
-        const token = generateToken({email:req.body.email});
-
-        return res.cookie('employeetoken', token, {
-            httpOnly: true,
-            // maxAge: 3600*1000,
-            sameSite: 'lax',
-            secure: false
-        }).json({success:true, status:200, data: isExit, message:'login Successfully'});
+        return res.json({success:true, status:200, data: isExit, message:'Login Successfully'});
 
     }
     catch(error){
-        console.log(error);
+         next(error);
     }
 
 }
@@ -116,7 +98,7 @@ export async function createEmployee(req, res, next){
             return res.json({success:false, status:400, message:'Email is already present'})
         }
 
-        const newEmployee = await prisma.User.create({
+        await prisma.User.create({
                data:{
                 name:data.data.name,
                 email:data.data.email,
@@ -125,26 +107,35 @@ export async function createEmployee(req, res, next){
                }
         })
 
-        return res.json({success:true, status:200, data:newEmployee});
+        return res.json({success:true, status:200, message:'Employee Added Successfully'});
 
      }
     catch(error){
-        console.log(error.message);
+         next(error);
     }
 
 }
 
 export async function getAllEmployee(req, res, next){
 
-    const allEmployee = await prisma.User.findMany({
+    try{
+
+        const allEmployee = await prisma.User.findMany({
         where:{
             NOT:{
                 role:"admin"
             }
         }
-    });
+        });
 
-    return res.json({success:true, status:200, data:allEmployee});
+        return res.json({success:true, status:200, data:allEmployee});
+
+    }
+    catch(error){
+        next(error);
+    }
+
+ 
 }
 
 export async function updateEmployee(req, res, next){
@@ -181,10 +172,10 @@ export async function updateEmployee(req, res, next){
             }
         })
 
-        return res.json({success:true, status:200, data:newData});
+        return res.json({success:true, status:200, message:'Updated Successfully'});
     }
     catch(error){
-        console.log(error);
+        next(error);
     }
 
 }
@@ -222,7 +213,7 @@ export async function deleteEmployee(req, res, next){
 
     }
     catch(error){
-        console.log(error);
+         next(error);
     }
 }
 
@@ -250,7 +241,7 @@ export async function employeeProfile(req, res, next){
         
     }
     catch(error){
-        console.log(error);
+         next(error);
     }
 
 

@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {useParams, Navigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import '../styles/EmpProfile.css';
 
@@ -9,27 +9,42 @@ function EmpProfile(){
     const [profile, setProfile] = useState(null);
     const {id} = useParams();
 
+    const empId = sessionStorage.getItem('loggedIn').split('-');
+    
+    if(empId[1] !== id){
+        return <Navigate to='/authentication-page' replace={true}/>
+    }
+
     useEffect(()=>{
        
         async function getEmployee(){
+
+                const controller = new AbortController()
+                const clearId = setTimeout(()=>{
+                controller.abort()  //abort the request if it is taking more than 3 second
+                },3000)
             
                 try{
                     setisLoading(true);
-                    const response = await fetch(`http://localhost:5555/api/employee/employee-profile/${id}`);
+                    const response = await fetch(`http://localhost:5555/api/employee/employee-profile/${id}`,{
+                        method:'GET',
+                        signal:controller.signal
+                    });
                     const result = await response.json();
-                    console.log(result);
-                    setProfile(result.data)
-
+                    setProfile(result.data);
                 }
                 catch(error){
-                    console.log(error);
+                    toast.error('Try After Some Time', { autoClose: 1500 });
+                    setTimeout(()=>{
+                        return navigate('/');
+                    },1500)
                 }
                 finally{
                     setTimeout(()=>{
                         setisLoading(false);
                     },500)
+                    clearTimeout(clearId);
                 }
-              
             }
        
         getEmployee();
@@ -63,7 +78,7 @@ function EmpProfile(){
                         </div>
                         <div className="profile-field position-field">
                             <div className="field-label">Position</div>
-                            <h3 className="field-value">{profile?.position}</h3>
+                            <h3 className="field-value">{profile?.position.toUpperCase()}</h3>
                         </div>
                     </div>
                 </div>

@@ -1,14 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MyContext } from "../context/ContextApi.jsx";
-import { z } from "zod";
+import {userSchema} from '../context/ContextApi'
 import '../styles/UpdateEmployee.css';
-
-const userSchema = z.object({
-    name: z.string().min(3, "Name must be at leat 3 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Name must start with alphabet and contain only letters, numbers and spaces"),
-    email: z.string().email('Enter valid email'),
-    position: z.string().min(2, "must be at leat 2 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Position must start with alphabet and contain only letters, numbers and spaces"),
-}).required();
+import { toast } from 'react-toastify';
 
 function UpdateEmployee() {
   const { isloading, setisLoading, error, setError } = useContext(MyContext);
@@ -22,14 +17,21 @@ function UpdateEmployee() {
 
   useEffect(() => {
     async function getEmployee() {
+
+        const controller = new AbortController()
+        const clearId = setTimeout(()=>{
+        controller.abort()  //abort the request if it is taking more than 3 second
+        },3000)
+
       try {
         setisLoading(true);
-        const response = await fetch(
-          `http://localhost:5555/api/employee/employee-profile/${id}`
-        );
+        const response = await fetch(`http://localhost:5555/api/employee/employee-profile/${id}`, {
+          method:'GET',
+          signal:controller.signal
+        });
 
-         if(!response.ok){
-            return alert('Something went wrong')
+        if(!response.ok){
+            return toast.error('Something went wrong', { autoClose: 1500 });
         }
 
         const result = await response.json();
@@ -38,10 +40,16 @@ function UpdateEmployee() {
           email: result?.data.email,
           position: result?.data.position,
         });
-      } catch (error) {
-        console.log(error);
-      } finally {
+      } 
+      catch (error) {
+          toast.error('Try After Some Time', { autoClose: 1500 });
+          setTimeout(()=>{
+            return navigate('/');
+          },1500)
+      } 
+      finally {
         setisLoading(false);
+        clearTimeout(clearId);
       }
     }
 
@@ -63,6 +71,10 @@ function UpdateEmployee() {
 
   async function handleUpdate() {
 
+        const controller = new AbortController()
+        const clearId = setTimeout(()=>{
+        controller.abort()  //abort the request if it is taking more than 3 second
+        },3000)
 
         const check = userSchema.safeParse(updateform);
            
@@ -73,19 +85,17 @@ function UpdateEmployee() {
                 errorHandlers.name = error.name?._errors[0]
                 errorHandlers.email = error.email?._errors[0]
                 errorHandlers.position = error.position?._errors[0]
-                // console.log(errorHandlers);
                 setError(errorHandlers)
                 return;
             }
 
-    try {
-      
+      try {
         setError(null);
         setisLoading(true);
-      const response = await fetch(
-        `http://localhost:5555/api/employee/update-employee/${id}`,
+      const response = await fetch(`http://localhost:5555/api/employee/update-employee/${id}`,
         {
           method: "PUT",
+          signal:controller.signal,
           headers: {
             "content-type": "application/json",
           },
@@ -93,25 +103,28 @@ function UpdateEmployee() {
         }
       );
 
-       if(!response.ok){
-            return alert('Something went wrong')
+        if(!response.ok){
+            return toast.error('Something went wrong', { autoClose: 1500 });
         }
 
       const result = await response.json();
 
       if (!result.success) {
-        alert(result.message);
-        return;
+         return toast.error(result.message, { autoClose: 1500 });
       }
 
       if (result.success) {
         setTimeout(()=>{
+            toast.success(result.message, { autoClose: 1500 });
             return navigate("/employee-list");
         },1500)
       }
     } 
     catch (error) {
-        console.log(error);
+         toast.error('Try After Some Time', { autoClose: 1500 });
+            setTimeout(()=>{
+            return navigate('/employee-list');
+        },1500)
     } 
     finally {
         setTimeout(()=>{
@@ -122,6 +135,7 @@ function UpdateEmployee() {
             });
             setisLoading(false);
         },1500)
+        clearTimeout(clearId);
     }
   }
 

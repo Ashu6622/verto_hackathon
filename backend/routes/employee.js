@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express();
 import {createEmployee, getAllEmployee, updateEmployee, deleteEmployee, employeeProfile, adminLogin, employeeLogin} from '../controllers/employeeController.js'
-import {jwtAuth} from '../middlewares/jwt.js'
 
 
 

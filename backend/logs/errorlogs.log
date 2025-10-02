@@ -1,0 +1,3 @@
+[2025-10-02T02:16:37.565Z] ERROR: prisma.User.finUnique is not a function - DELETE /api/employee/delete-employee/13
+[2025-10-02T02:17:02.294Z] ERROR: prisma.User.finUnique is not a function - DELETE /api/employee/delete-employee/13
+[2/10/2025, 7:47:53 am] ERROR: prisma.User.finUnique is not a function - DELETE /api/employee/delete-employee/1

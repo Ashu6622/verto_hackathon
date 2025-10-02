@@ -14,16 +14,19 @@ function AllEmployee(){
 
     useEffect(()=>{
         document.title = 'Employee List'
-        const controller = new AbortController();
 
         async function fetchData(){
+
+            const controller = new AbortController()
+            const clearId = setTimeout(()=>{
+                controller.abort()  //abort the request if it is taking more than 3 second
+            },3000)
 
             try{
 
                 setisLoading(true);
                 const response = await fetch(`http://localhost:5555/api/employee/employee-list`,{
                     method:'GET',
-                    // credentials: "include"
                     signal:controller.signal
                 });
 
@@ -34,7 +37,7 @@ function AllEmployee(){
                 const result = await response.json();
 
                 if(!result.success){
-                    alert(result.message);
+                    toast.error(result.success, { autoClose: 1500 });
                     return navigate('/')
                 }
 
@@ -44,12 +47,16 @@ function AllEmployee(){
 
             }
             catch(error){
-                console.log(error);
+                toast.error('Try After Some Time', { autoClose: 1500 });
+                setTimeout(()=>{
+                    return navigate('/');
+                },1500)
             }
             finally{
                  setTimeout(()=>{
                      setisLoading(false);
                 },1500)
+                clearTimeout(clearId);
             }
           
         }
@@ -89,7 +96,7 @@ function AllEmployee(){
                                     <div className="employee-info">
                                         <span className="employee-name">{emp.name}</span>
                                         <span className="employee-email">{emp.email}</span>
-                                        <span className="employee-position">{emp.position}</span>
+                                        <span className="employee-position">{emp.position.toUpperCase()}</span>
                                     </div>
                                     <div className="employee-actions">
                                         <button className="action-button delete-button" onClick={()=> handleDeleteClick(emp)}>Delete</button>
