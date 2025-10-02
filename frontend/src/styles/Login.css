@@ -72,6 +72,16 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* Error message styling */
+.error-message {
+  margin: 2px;
+  padding: 0;
+  font-weight: 400;
+  line-height: 1;
+  animation: fadeIn 0.3s ease-in;
+  /* border:1px solid red; */
+}
+
 .button-group {
   display: flex;
   flex-direction: column;

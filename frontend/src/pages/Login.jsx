@@ -5,7 +5,8 @@ import '../styles/Login.css';
 
 function Login(){
 
-    const {loginemail, handleLogin, role, setRole, setloginEmail, isloading} = useContext(MyContext);
+    const {loginemail, handleLogin, role, setRole, setloginEmail, isloading, error} = useContext(MyContext);
+
 
     return(
         <div className="login-container">
@@ -27,6 +28,7 @@ function Login(){
                     role !== null && 
                     <div className="login-form">
                          <input className="email-input" type="email" placeholder="Enter Email" name="email" value={loginemail} onChange={(e)=> setloginEmail(e.target.value)}/>
+                         {error?.email && <p className="error-message" style={{fontSize:'12px', color:'red', marginTop:'-12px', marginBottom:'-30px', textAlign:'left'}}>{error.email}</p>}
                          <div className="button-group">
                             <button className="login-button" onClick={handleLogin} disabled={isloading}>{isloading ? 'Loading...' : 'Login'}</button>
                             <button className="back-button" onClick={()=> setRole(null)}>Back</button>

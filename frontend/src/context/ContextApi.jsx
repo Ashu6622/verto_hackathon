@@ -8,10 +8,12 @@ const API_URL = import.meta.env.VITE_API_URL
 
 
 export const userSchema = z.object({
-    name: z.string().min(3, "Name must be at leat 3 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Name must start with alphabet and contain only letters, numbers and spaces"),
-    email: z.string().email('Enter valid email'),
-    position: z.string().min(2, "must be at leat 2 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Position must start with alphabet and contain only letters, numbers and spaces"),
+    name: z.string().trim().min(3, "Name must be at leat 3 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Name must start with alphabet and contain only letters, numbers and spaces"),
+    email: z.string().trim().email('Enter valid email'),
+    position: z.string().trim().min(2, "must be at leat 2 characters").regex(/^[A-Za-z][A-Za-z0-9\s]*$/, "Position must start with alphabet and contain only letters, numbers and spaces"),
 }).required();
+
+const emailSchema = z.string().trim().email('Enter valid email')
 
 function ContextApi({children}){
 
@@ -108,6 +110,20 @@ function ContextApi({children}){
     }
 
     async function handleLogin(){
+        
+        if(loginemail.trim() === ""){
+             toast.error('Enter the Email', { autoClose: 1500 });
+        }
+        const check = emailSchema.safeParse(loginemail);
+
+        if(!check.success){
+            const error = check.error.format()
+            const errorHandlers = {}
+            errorHandlers.email = error._errors[0]
+            setError(errorHandlers)
+            return;
+        }
+
 
         const controller = new AbortController()
         const clearId = setTimeout(()=>{
@@ -115,6 +131,7 @@ function ContextApi({children}){
         },3000)
 
         try{
+            setError(null);
             setisLoading(true);
             const response = await fetch(`${API_URL}/${role}-login`,{
                 method:'POST',
