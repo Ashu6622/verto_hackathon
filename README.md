@@ -188,4 +188,8 @@ User {
 **Ashutosh** - MERN Developer
 
 
-Deployed_URL = `https://verto-hackathon.vercel.app/`
+## Deployed_URL = `https://verto-hackathon.vercel.app/`
+
+## Test Data
+## for admin access => `admin@gmail.com`
+## for employee access => `ashu@gmail.com

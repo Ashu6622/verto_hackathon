@@ -35,7 +35,7 @@ function EmpProfile(){
                     setProfile(result.data);
                 }
                 catch(error){
-                    toast.error('Try After Some Time', { autoClose: 1500 });
+                    toast.error('Try Again', { autoClose: 1500 });
                     setTimeout(()=>{
                         return navigate('/');
                     },1500)

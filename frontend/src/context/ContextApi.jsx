@@ -67,7 +67,7 @@ function ContextApi({children}){
             })
 
             if(!response.ok){
-                return toast.error('Something went wrong', { autoClose: 1500 })
+                return toast.error('Something went wrong try again', { autoClose: 1500 })
             }   
 
             const result = await response.json();
@@ -142,7 +142,7 @@ function ContextApi({children}){
                 body : JSON.stringify({email:loginemail})
             });
             if(!response.ok){
-                return toast.error('Something went wrong', { autoClose: 1500 })
+                return toast.error('Something went wrong try again', { autoClose: 1500 })
             }
             const result = await response.json();
 
@@ -171,7 +171,7 @@ function ContextApi({children}){
             
         }
         catch(error){
-            toast.error('Try After Some Time', { autoClose: 1500 });
+            toast.error('Try Again', { autoClose: 1500 });
             setTimeout(()=>{
                 return navigate('/');
             },1500)
@@ -203,7 +203,7 @@ function ContextApi({children}){
             });
 
             if(!response.ok){
-                return toast.error('Something went wrong', { autoClose: 1500 })
+                return toast.error('Something went wrong try again', { autoClose: 1500 })
             }
             const result = await response.json();
 
@@ -219,7 +219,7 @@ function ContextApi({children}){
             }
         }
         catch(error){
-            toast.error('Try After Some Time', { autoClose: 1500 });
+            toast.error('Try Again', { autoClose: 1500 });
             setTimeout(()=>{
                 return navigate('/');
             },1500)
