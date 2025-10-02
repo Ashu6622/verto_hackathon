@@ -40,8 +40,8 @@ export async function adminLogin(req, res, next){
     catch(error){
        next(error);
     }
-   
 }
+
 
 export async function employeeLogin(req, res, next){
 
@@ -70,12 +70,39 @@ export async function employeeLogin(req, res, next){
     catch(error){
          next(error);
     }
+}
 
+
+export async function employeeProfile(req, res, next){
+
+    try{
+        const empId = paramsId.safeParse(req.params.id);
+        
+        if(!empId.success){
+            return res.json({success:false, status:400, message:"Id must be string"});
+        }
+
+        // first check if the Employee present with the id provided
+
+        const isExit = await prisma.User.findUnique({
+            where:{
+                id: parseInt(req.params.id)
+            }
+        })
+
+        if(!isExit){
+            return res.json({success:false, status:400, message:'Employee Not Exit' })
+        }
+        return res.json({success:true, status:200, data:isExit})
+        
+    }
+    catch(error){
+         next(error);
+    }
 }
 
 
 // access to only admin
-
 export async function createEmployee(req, res, next){
 
     try{
@@ -83,7 +110,7 @@ export async function createEmployee(req, res, next){
         const data = createSchema.safeParse(req.body);
 
         if(!data.success){
-            return res.json({status:400, error: JSON.parse(data.error)});
+            return res.json({status:400, message: 'Enter Valid Employee Data'});
         }
 
         // check if email is already register
@@ -113,8 +140,8 @@ export async function createEmployee(req, res, next){
     catch(error){
          next(error);
     }
-
 }
+
 
 export async function getAllEmployee(req, res, next){
 
@@ -133,10 +160,9 @@ export async function getAllEmployee(req, res, next){
     }
     catch(error){
         next(error);
-    }
-
- 
+    } 
 }
+
 
 export async function updateEmployee(req, res, next){
 
@@ -177,8 +203,8 @@ export async function updateEmployee(req, res, next){
     catch(error){
         next(error);
     }
-
 }
+
 
 export async function deleteEmployee(req, res, next){
 
@@ -210,39 +236,9 @@ export async function deleteEmployee(req, res, next){
 
         return res.json({success:true, status:200, message:'Deleted Successfully'});
 
-
     }
     catch(error){
          next(error);
     }
 }
 
-export async function employeeProfile(req, res, next){
-
-    try{
-        const empId = paramsId.safeParse(req.params.id);
-        
-        if(!empId.success){
-            return res.json({success:false, status:400, message:"Id must be string"});
-        }
-
-        // first check if the Employee present with the id provided
-
-        const isExit = await prisma.User.findUnique({
-            where:{
-                id: parseInt(req.params.id)
-            }
-        })
-
-        if(!isExit){
-            return res.json({success:false, status:400, message:'Employee Not Exit' })
-        }
-        return res.json({success:true, status:200, data:isExit})
-        
-    }
-    catch(error){
-         next(error);
-    }
-
-
-}
