@@ -187,3 +187,5 @@ User {
 
 **Ashutosh** - MERN Developer
 
+
+Deployed_URL = `https://verto-hackathon.vercel.app/`
