@@ -125,17 +125,17 @@ function ContextApi({children}){
         }
 
 
-        const controller = new AbortController()
-        const clearId = setTimeout(()=>{
-            controller.abort()  //abort the request if it is taking more than 6 second
-        },6000)
+        // const controller = new AbortController()
+        // const clearId = setTimeout(()=>{
+        //     controller.abort()  //abort the request if it is taking more than 6 second
+        // },6000)
 
         try{
             setError(null);
             setisLoading(true);
             const response = await fetch(`${API_URL}/${role}-login`,{
                 method:'POST',
-                signal: controller.signal,
+                // signal: controller.signal,
                 headers:{
                     'content-type':'application/json',
                 },
