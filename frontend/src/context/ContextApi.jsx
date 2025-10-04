@@ -89,7 +89,7 @@ function ContextApi({children}){
         catch(error){
             toast.error(error.message, { autoClose: 1500 });
             setTimeout(()=>{
-                return navigate('/add-employee');
+                return navigate('/employee-list');
             },2000)
         }
         finally{
@@ -106,10 +106,10 @@ function ContextApi({children}){
     }, [form])
 
 
-    function handleFormChange(e){
+    const handleFormChange = useCallback((e)=>{
         const {name, value} = e.target;
         setForm((prev)=> ({...prev,  [name]: value}));
-    }
+    },[])
 
 
     //  login of admin and employee

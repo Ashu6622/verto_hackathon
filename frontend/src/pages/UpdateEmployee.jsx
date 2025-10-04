@@ -69,10 +69,10 @@ function UpdateEmployee() {
     };
   }, []);
 
-  function handleUpdateChange(e) {
+  const handleUpdateChange = useCallback((e)=> {
     const { name, value } = e.target;
     setUpdateForm((prev) => ({ ...prev, [name]: value }));
-  }
+  },[])
 
 
   const handleUpdate = useCallback(async ()=>{
