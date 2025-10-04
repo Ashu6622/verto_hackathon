@@ -183,7 +183,7 @@ function ContextApi({children}){
                 setisLoading(false)
             }, 1500)
 
-            clearTimeout(clearId);
+            // clearTimeout(clearId);
         }
         
     }
