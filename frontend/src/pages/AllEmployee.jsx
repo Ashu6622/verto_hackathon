@@ -2,6 +2,7 @@ import {useEffect, useState, useContext, useMemo, useCallback} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import * as XLSX from "xlsx";
+import { toast } from 'react-toastify';
 import '../styles/AllEmployee.css';
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -71,12 +72,17 @@ function AllEmployee(){
 
 
 
-    const exportToExcel = useCallback(()=>{
-        const worksheet = XLSX.utils.json_to_sheet(list);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-        XLSX.writeFile(workbook, "employee-list.xlsx");
-    },[]);
+    const exportToExcel = ()=>{
+        try{
+            const worksheet = XLSX?.utils?.json_to_sheet(list);
+            const workbook = XLSX?.utils?.book_new();
+            XLSX?.utils?.book_append_sheet(workbook, worksheet, "Sheet1");
+            XLSX?.writeFile(workbook, "employee-list.xlsx");
+        }
+        catch(error){
+            toast.error('Try Again', { autoClose: 1500 });
+        }
+    };
 
 
     const fileteredData = useMemo(() => {
