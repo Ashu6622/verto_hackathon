@@ -1,4 +1,4 @@
-import {useEffect, useState, useContext} from 'react'
+import {useEffect, useState, useContext, useMemo, useCallback} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import * as XLSX from "xlsx";
@@ -13,11 +13,11 @@ function AllEmployee(){
     const {isloading, setisLoading, logoutAdmin,  handleDeleteClick, confirmDelete, cancelDelete, showDialog, employeeToDelete, list, setList} = useContext(MyContext);
     const [text, setText] = useState('');
 
-
     useEffect(()=>{
         document.title = 'Employee List'
+    },[])
 
-        async function fetchData(){
+    const getEmployeeList = useCallback(async ()=>{
 
             const controller = new AbortController()
             const clearId = setTimeout(()=>{
@@ -45,27 +45,28 @@ function AllEmployee(){
 
                 setTimeout(()=>{
                     setList(result.data);
-                },1500)
+                },1000)
 
             }
             catch(error){
                 toast.error('Try Again', { autoClose: 1500 });
                 setTimeout(()=>{
                     return navigate('/');
-                },1500)
+                },1000)
             }
             finally{
                  setTimeout(()=>{
                      setisLoading(false);
-                },1500)
+                },1000)
                 clearTimeout(clearId);
             }
-          
-        }
 
-        fetchData();
+    },[]);
 
-    },[])
+
+    useEffect(()=>{
+        getEmployeeList();
+    },[getEmployeeList])
 
     function exportToExcel(){
         const worksheet = XLSX.utils.json_to_sheet(list);
@@ -75,7 +76,9 @@ function AllEmployee(){
     };
 
 
-    const fileteredData = list?.filter((emp)=> emp.name.toLowerCase().includes(text.toLowerCase()))
+    const fileteredData = useMemo(() => {
+        return list?.filter((emp)=> emp.name.toLowerCase().includes(text.toLowerCase()))
+    }, [list, text])
 
 
     return(

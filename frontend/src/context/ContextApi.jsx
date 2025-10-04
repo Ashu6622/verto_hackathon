@@ -1,4 +1,4 @@
-import {createContext, useState} from 'react'
+import {createContext, useState, useCallback} from 'react'
 import { z } from "zod";
 export const MyContext = createContext();
 import {useNavigate} from 'react-router-dom';
@@ -32,7 +32,9 @@ function ContextApi({children}){
     const [employeeToDelete, setEmployeeToDelete] = useState(null);
     const [list, setList] = useState(null);
     
-    async function handleForm(){
+
+    // add the employee by admin
+    const handleForm = useCallback(async ()=>{
 
          const check = userSchema.safeParse(form);
            
@@ -101,15 +103,17 @@ function ContextApi({children}){
             },2000)
             clearTimeout(clearId);
         }
-       
-    }
+    }, [form])
+
 
     function handleFormChange(e){
         const {name, value} = e.target;
         setForm((prev)=> ({...prev,  [name]: value}));
     }
 
-    async function handleLogin(){
+
+    //  login of admin and employee
+    const handleLogin = useCallback(async()=> {
         
         if(loginemail.trim() === ""){
              toast.error('Enter the Email', { autoClose: 1500 });
@@ -123,19 +127,11 @@ function ContextApi({children}){
             setError(errorHandlers)
             return;
         }
-
-
-        // const controller = new AbortController()
-        // const clearId = setTimeout(()=>{
-        //     controller.abort()  //abort the request if it is taking more than 6 second
-        // },6000)
-
         try{
             setError(null);
             setisLoading(true);
             const response = await fetch(`${API_URL}/${role}-login`,{
                 method:'POST',
-                // signal: controller.signal,
                 headers:{
                     'content-type':'application/json',
                 },
@@ -165,10 +161,8 @@ function ContextApi({children}){
                         toast.success(result.message, { autoClose: 1500 });
                         return navigate(`/profile/${result.data.id}`, {replace:true})
                     }
-
                 },1500)
             }
-            
         }
         catch(error){
             toast.error('Try Again', { autoClose: 1500 });
@@ -177,18 +171,16 @@ function ContextApi({children}){
             },1500)
         }
         finally{
-
             setTimeout(()=>{
                 setloginEmail('');
                 setisLoading(false)
             }, 1500)
-
-            // clearTimeout(clearId);
         }
-        
-    }
+    },[loginemail, role])
 
-    async function deleteEmployee(id){
+
+    // delete the employee by admin
+    const deleteEmployee = useCallback( async (id)=>{
 
         const controller = new AbortController()
         const clearId = setTimeout(()=>{
@@ -228,7 +220,7 @@ function ContextApi({children}){
             clearTimeout(clearId);
         }
 
-    }
+    }, [])
 
 
     function handleDeleteClick(emp) {

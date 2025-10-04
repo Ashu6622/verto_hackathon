@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react'
+import {useContext, useEffect, useState, useMemo, useCallback} from 'react'
 import {useParams, Navigate} from 'react-router-dom'
 import { MyContext } from '../context/ContextApi.jsx';
 import '../styles/EmpProfile.css';
@@ -10,7 +10,9 @@ function EmpProfile(){
     const [profile, setProfile] = useState(null);
     const {id} = useParams();
 
-    const empId = sessionStorage.getItem('loggedIn').split('-');
+    const empId = useMemo(() => {
+        return sessionStorage.getItem('loggedIn')?.split('-');
+    }, []);
     
     if(empId[1] !== id){
         return <Navigate to='/authentication-page' replace={true}/>
@@ -20,40 +22,38 @@ function EmpProfile(){
         document.title = 'Employee Profile'
     },[])
 
-    useEffect(()=>{
-       
-        async function getEmployee(){
+    const getEmployee = useCallback(async () => {
+        const controller = new AbortController()
+        const clearId = setTimeout(()=>{
+            controller.abort()  //abort the request if it is taking more than 6 second
+        },6000)
+    
+        try{
+            setisLoading(true);
+            const response = await fetch(`${API_URL}/employee-profile/${id}`,{
+                method:'GET',
+                signal:controller.signal
+            });
+            const result = await response.json();
+            setProfile(result.data);
+        }
+        catch(error){
+            toast.error('Try Again', { autoClose: 1500 });
+            setTimeout(()=>{
+                return navigate('/');
+            },1500)
+        }
+        finally{
+            setTimeout(()=>{
+                setisLoading(false);
+            },500)
+            clearTimeout(clearId);
+        }
+    }, [id, setisLoading]);
 
-                const controller = new AbortController()
-                const clearId = setTimeout(()=>{
-                controller.abort()  //abort the request if it is taking more than 6 second
-                },6000)
-            
-                try{
-                    setisLoading(true);
-                    const response = await fetch(`${API_URL}/employee-profile/${id}`,{
-                        method:'GET',
-                        signal:controller.signal
-                    });
-                    const result = await response.json();
-                    setProfile(result.data);
-                }
-                catch(error){
-                    toast.error('Try Again', { autoClose: 1500 });
-                    setTimeout(()=>{
-                        return navigate('/');
-                    },1500)
-                }
-                finally{
-                    setTimeout(()=>{
-                        setisLoading(false);
-                    },500)
-                    clearTimeout(clearId);
-                }
-            }
-       
+    useEffect(()=>{
         getEmployee();
-    },[])
+    },[getEmployee])
 
     return(
         <div className="emp-profile-container">

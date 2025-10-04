@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MyContext } from "../context/ContextApi.jsx";
 import {userSchema} from '../context/ContextApi'
@@ -74,7 +74,8 @@ function UpdateEmployee() {
     setUpdateForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleUpdate() {
+
+  const handleUpdate = useCallback(async ()=>{
 
         const controller = new AbortController()
         const clearId = setTimeout(()=>{
@@ -85,7 +86,6 @@ function UpdateEmployee() {
            
             if(!check.success){
                 const error = check.error.format()
-                
                 const errorHandlers = {}
                 errorHandlers.name = error.name?._errors[0]
                 errorHandlers.email = error.email?._errors[0]
@@ -97,7 +97,7 @@ function UpdateEmployee() {
       try {
         setError(null);
         setisLoading(true);
-      const response = await fetch(`${API_URL}/update-employee/${id}`,
+        const response = await fetch(`${API_URL}/update-employee/${id}`,
         {
           method: "PUT",
           signal:controller.signal,
@@ -142,7 +142,9 @@ function UpdateEmployee() {
         },1500)
         clearTimeout(clearId);
     }
-  }
+
+  },[updateform, id])
+
 
   return (
     <div className="update-employee-container">
