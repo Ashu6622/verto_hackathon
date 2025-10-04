@@ -68,12 +68,15 @@ function AllEmployee(){
         getEmployeeList();
     },[getEmployeeList])
 
-    function exportToExcel(){
+
+
+
+    const exportToExcel = (()=>{
         const worksheet = XLSX.utils.json_to_sheet(list);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
         XLSX.writeFile(workbook, "employee-list.xlsx");
-    };
+    },[]);
 
 
     const fileteredData = useMemo(() => {
