@@ -2,6 +2,17 @@
 
 A full-stack web application for managing employee data with role-based access control (Admin/Employee).
 
+
+## Test Data
+-- for admin login access => `admin@gmail.com`
+-- for employee login access => `ashu@gmail.com`
+-- also use the any employee email from the employee list on the UI to login as employee
+
+
+Backend Hosted on Render
+Frontend Hosted on Vercel
+Database MySQL Hosted on Railway
+
 ## 🚀 Tech Stack
 
 ### Backend
@@ -190,6 +201,3 @@ User {
 
 ## Deployed_URL = `https://verto-hackathon.vercel.app/`
 
-## Test Data
-## for admin access => `admin@gmail.com`
-## for employee access => `ashu@gmail.com
