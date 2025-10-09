@@ -188,6 +188,12 @@ function UpdateEmployee() {
             />
             {error?.position && <p className="error-message" style={{fontSize:'12px', color:'red', marginBottom:'-20px'}}>{error.position}</p>}
           </div>
+          {isloading && (
+            <div className="loading-message">
+              <p>🔄 Updating employee information...</p>
+              <p>Please wait while we save the changes.</p>
+            </div>
+          )}
           <div className="button-group">
             <button className="update-button" onClick={handleUpdate} disabled={isloading}>
               {isloading ? "Updating..." : "Update"}
@@ -197,6 +203,7 @@ function UpdateEmployee() {
               onClick={() => {
                 navigate(-1);
               }}
+              disabled={isloading}
             >
               Back
             </button>

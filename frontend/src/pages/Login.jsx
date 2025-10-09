@@ -32,9 +32,15 @@ function Login(){
                     <div className="login-form">
                          <input className="email-input" type="email" placeholder="Enter Email" name="email" value={loginemail} onChange={(e)=> setloginEmail(e.target.value)}/>
                          {error?.email && <p className="error-message" style={{fontSize:'12px', color:'red', marginTop:'-12px', marginBottom:'-30px', textAlign:'left'}}>{error.email}</p>}
+                         {isloading && (
+                            <div className="loading-message">
+                                <p>🔐 Authenticating your credentials...</p>
+                                <p>Please wait while we verify your access. It will be definitely done</p>
+                            </div>
+                         )}
                          <div className="button-group">
                             <button className="login-button" onClick={handleLogin} disabled={isloading}>{isloading ? 'Loading...' : 'Login'}</button>
-                            <button className="back-button" onClick={()=> setRole(null)}>Back</button>
+                            <button className="back-button" onClick={()=> setRole(null)} disabled={isloading}>Back</button>
                          </div>
                     </div>
                 }
