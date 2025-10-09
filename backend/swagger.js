@@ -8,8 +8,8 @@ const doc = {
     title: 'Employee Management API',
     description: 'Automatically generated Swagger doc',
   },
-  host: 'localhost:5555',
-  schemes: ['http']
+  host: 'verto-hackathon.vercel.app',
+  schemes: ['https']
 };
 
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
